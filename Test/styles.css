@@ -1,0 +1,16 @@
+body {
+    margin: 0;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 19% 81%;
+}
+
+#navbar{
+    background-color: #EFE1F2;
+}
+
+#content{
+    background-color: #F8F8F8;
+}
