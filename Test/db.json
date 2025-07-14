@@ -2,11 +2,18 @@
   "events": [],
   "users": [
     {
-      "id" : "1",
-      "name" : "admin",
-      "email" : "admin@admin.com",
-      "password" : "admin",
-      "role" : "admin"
+      "id": "1",
+      "name": "admin",
+      "email": "admin@admin.com",
+      "password": "admin",
+      "role": "admin"
+    },
+    {
+      "id": "0237",
+      "name": "Miguel",
+      "email": "miguel@gmail.com",
+      "password": "123",
+      "role": "Visitor"
     }
   ]
 }
