@@ -151,7 +151,8 @@ function setupRegister() {
 }
 
 function setupEvents() {
-    const display = document.getElementById("product-list");
+    const display = document.getElementById("event-list");
+    const isAdmin = localStorage.getItem("isAdmin");
     display.innerHTML = "";
     fetch("http://localhost:3000/events")
         .then(res => {
@@ -162,14 +163,18 @@ function setupEvents() {
         })
         .then(data => {
             if (data.length === 0) {
-                display.innerHTML = "<p>No events available.</p>";
-                return;
+                if( isAdmin) {
+                    display.innerHTML = "<p>No events available. Please add some.</p>";
+                }else {
+                    display.innerHTML = "<p>No events available.</p>";
+                    return;
+                }
             }
             data.forEach(element => {
-                const divContainer = document.createElement("div");
-                divContainer.innerHTML = `
-                <h3>${element.name}</h3>
-                <p>${element.price}</p>
+                const tableRow = document.createElement("tr");
+                tableRow.innerHTML = `
+                <td>${element.name}</td>
+                <td>${element.price}</td>
                 `;
                 const editBtn = document.createElement("button");
                 editBtn.classList.add("edit-btn");
@@ -184,9 +189,9 @@ function setupEvents() {
                     addToCart(element);
                 });
 
-                divContainer.appendChild(editBtn);
-                divContainer.appendChild(addBtn);
-                display.appendChild(divContainer);
+                tableRow.appendChild(editBtn);
+                tableRow.appendChild(addBtn);
+                display.appendChild(tableRow);
             })
         })
 };
