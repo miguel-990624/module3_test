@@ -1,5 +1,18 @@
 {
-  "events": [],
+  "events": [
+    {
+      "id": "e19b",
+      "name": "q",
+      "description": "asdas",
+      "capacity": 123,
+      "date": "2025-07-16",
+      "ocuppation": 2,
+      "attendants": [
+        "b7dd",
+        "0237"
+      ]
+    }
+  ],
   "users": [
     {
       "id": "1",
@@ -12,6 +25,13 @@
       "id": "0237",
       "name": "Miguel",
       "email": "miguel@gmail.com",
+      "password": "123",
+      "role": "Visitor"
+    },
+    {
+      "id": "b7dd",
+      "name": "1",
+      "email": "aa@aa",
       "password": "123",
       "role": "Visitor"
     }

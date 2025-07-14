@@ -259,6 +259,50 @@ function setupEvents() {
                     enrollBtn.classList.add("enroll-btn");
                     enrollBtn.innerHTML = "enroll";
                     enrollBtn.addEventListener("click", () => {
+                        fetch(`http://localhost:3000/events/${element.id}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const currentUserID = localStorage.getItem("userID");
+                            const found = data.attendants.find((any) => any === currentUserID);
+                            console.log(found, currentUserID);
+                            if (found) {
+                                alert("You are already enrolled in this event");
+                                enrollBtn.disabled = true;
+                                enrollBtn.innerHTML = "Enrolled";
+                                enrollBtn.classList.add("enrolled");
+                                return;
+                            }
+
+                            fetch(`http://localhost:3000/events/${element.id}`, {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    id: element.id,
+                                    name: data.name,
+                                    description: data.description,
+                                    capacity: data.capacity,
+                                    date: data.date,
+                                    ocuppation: data.ocuppation + 1,
+                                    attendants: [...data.attendants, currentUserID]
+                                })
+                            })
+                            .then(res => {
+                                if (!res.ok) {
+                                    throw new Error("Failed to enroll in event");
+                                }
+                                return res.json();
+                            })
+                            .then(() => {
+
+                                    if (data.ocuppation ===  data.capacity) {
+                                        enrollBtn.disabled = true;
+                                        enrollBtn.innerHTML = "sold out";
+                                        enrollBtn.classList.add("sold-out");
+                                    }
+                                })
+                            .catch(error => console.error("Oops, looks like something went wrong", error));
+                            console.log(data.ocuppation, data.capacity);
+                        })
 
                     });
 
@@ -296,7 +340,8 @@ function setupAddForm() {
                 description: formDescription,
                 capacity: Number(formCapacity),
                 date: formDate,
-                ocuppation: eventOcupation
+                ocuppation: eventOcupation,
+                attendants: []
             })
         })
             .then(res => {
@@ -339,7 +384,8 @@ function setupEditForm(path) {
                     description: updatedDescription,
                     capacity: Number(updatedCapacity),
                     date: updatedDate,
-                    ocuppation: data.ocuppation
+                    ocuppation: data.ocuppation,
+                    attendants: data.attendants
                 })
             })
             .then(res => res.json())
@@ -350,7 +396,6 @@ function setupEditForm(path) {
     });
         
 }
-
 
 
 window.addEventListener("popstate", () => {
