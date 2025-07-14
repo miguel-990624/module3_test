@@ -53,13 +53,18 @@ async function navigate(path) {
             </div>
         </section>
     <nav>
+        <a href="/enrollment" data-link>Enrollments</a>
         <a href="/events" data-link>Events</a>
         <button id="logout-btn" type="button">Logout</button>
     </nav>
     `;
 
     if (isLoggedIn) {
-        navbar.innerHTML = AdminNavbar;
+        if (isAdmin === "true" || isAdmin === true) {
+            navbar.innerHTML = AdminNavbar;
+        } else {
+            navbar.innerHTML = UserNavbar;
+        };
         const logoutBtn = document.getElementById("logout-btn")
 
         if (logoutBtn) {
@@ -94,7 +99,7 @@ async function navigate(path) {
     if (path.startsWith("/edit")) {
         setupEditForm(path);
     }
-    // if (path === "/enrollment") setupCart();
+    if (path === "/enrollment") setupEnrollment();
     history.pushState({}, "", path);
 };
 
@@ -397,6 +402,42 @@ function setupEditForm(path) {
         
 }
 
+function setupEnrollment() {
+    const display = document.getElementById("event-list");
+    const currentUserID = localStorage.getItem("userID");
+    display.innerHTML = `
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Date</th>
+    </tr>
+    `;
+    fetch("http://localhost:3000/events")
+        .then(res => res.json())
+        .then(data => {
+            if (data.length === 0) {
+                display.innerHTML = "<p>Not enrolled to any events.</p>";
+                return;
+            }
+            data.forEach(element => {
+                if (element.attendants.includes(currentUserID)) {
+                    const tableRow = document.createElement("tr");
+                    tableRow.innerHTML = `
+                    <td><img src="./resources/events.png" alt="event"></td>
+                    <td>${element.name}</td>
+                    <td>${element.description}</td>
+                    <td>${element.date}</td>
+                    `;
+                    display.appendChild(tableRow);
+                } else {
+                    display.innerHTML = "<p>Not enrolled to any events.</p>";
+                    return;
+                };
+            });
+        });
+
+}
 
 window.addEventListener("popstate", () => {
     navigate(location.pathname);
